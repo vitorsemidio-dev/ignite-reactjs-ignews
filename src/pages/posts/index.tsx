@@ -1,8 +1,13 @@
 import Prismic from "@prismicio/client";
 import { GetStaticProps } from "next";
 import Head from "next/head";
-import { getPrismicClient } from "../../services/prismic";
 import { RichText } from "prismic-dom";
+import {
+  getPrismicClient,
+  PrismicPredicates,
+  PrismicTypePost,
+  PrismicTypes,
+} from "../../services/prismic";
 import styles from "./styles.module.scss";
 
 type Post = {
@@ -17,8 +22,6 @@ interface PostsProps {
 }
 
 export default function Posts({ posts }: PostsProps) {
-  // const posts = [];
-  console.log(posts);
   return (
     <>
       <Head>
@@ -51,22 +54,21 @@ export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
 
   const response = await prismic.query<PrismicTypePostResponse>(
-    [Prismic.Predicates.at("document.type", "post")],
+    [Prismic.Predicates.at(PrismicPredicates.DOCUMENT_TYPE, PrismicTypes.POST)],
     {
-      fetch: ["post.title", "post.content"],
+      fetch: [PrismicTypePost.TITLE, PrismicTypePost.CONTENT],
       pageSize: 100,
     },
   );
-
-  console.log(JSON.stringify(response, null, 2));
 
   const posts = response.results.map((post) => {
     return {
       slug: post.uid,
       title: RichText.asText(post.data.title),
       excerpt:
-        post.data.content.find((content) => content.type === "paragraph")
-          ?.text ?? "",
+        post.data.content.find(
+          (content) => content.type === "paragraph" && content.text.length > 0,
+        )?.text ?? "",
       updatedAt: new Date(post.last_publication_date).toLocaleDateString(
         "pt-BR",
         {
@@ -77,8 +79,6 @@ export const getStaticProps: GetStaticProps = async () => {
       ),
     };
   });
-
-  console.log(posts);
 
   return {
     props: {
