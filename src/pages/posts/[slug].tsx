@@ -52,7 +52,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   const session = await getSession({ req });
   const { slug } = params;
 
-  if (slug === "favicon.png") return { props: { post: null } };
+  if (slug === "favicon.png") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   if (!session.userActiveSubscription) {
     return {
