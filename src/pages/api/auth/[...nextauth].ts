@@ -16,9 +16,9 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
+    async session({ session }) {
       try {
-        const { email } = user;
+        const { email } = session.user;
         const userActiveSubscription = await fauna.query(
           q.Get(
             q.Intersection([

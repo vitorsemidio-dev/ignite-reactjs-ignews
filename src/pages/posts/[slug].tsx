@@ -54,6 +54,15 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   if (slug === "favicon.png") return { props: { post: null } };
 
+  if (!session.userActiveSubscription) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const prismic = getPrismicClient();
 
   const response = await prismic.getByUID<PrismicTypePostResponse>(
