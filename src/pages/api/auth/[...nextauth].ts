@@ -16,6 +16,40 @@ export default NextAuth({
     }),
   ],
   callbacks: {
+    async session({ session, user }) {
+      try {
+        const { email } = user;
+        const userActiveSubscription = await fauna.query(
+          q.Get(
+            q.Intersection([
+              q.Match(
+                q.Index(FaunaIndexes.SUBSCRIPTION_BY_USER_REF),
+                q.Select(
+                  "ref",
+                  q.Get(
+                    q.Match(
+                      q.Index(FaunaIndexes.USER_BY_EMAIL),
+                      q.Casefold(email),
+                    ),
+                  ),
+                ),
+              ),
+              q.Match(q.Index(FaunaIndexes.SUBSCRIPTION_BY_STATUS), "active"),
+            ]),
+          ),
+        );
+
+        return {
+          ...session,
+          userActiveSubscription,
+        };
+      } catch (error) {
+        return {
+          ...session,
+          userActiveSubscription: null,
+        };
+      }
+    },
     async signIn({ user }) {
       const data = {
         email: user.email,
