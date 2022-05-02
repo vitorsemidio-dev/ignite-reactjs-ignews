@@ -1,5 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { RichText } from "prismic-dom";
 import { getPrismicClient, PrismicTypes } from "../../../services/prismic";
 import styles from "../post.module.scss";
@@ -31,6 +32,13 @@ export default function PostPreview({ post }: PostPreviewProps) {
               __html: post?.content,
             }}
           />
+
+          <div className={styles.continueReading}>
+            Wanna continue reading?
+            <Link href="/">
+              <a>Subscribe now 🤗</a>
+            </Link>
+          </div>
         </article>
       </main>
     </>
