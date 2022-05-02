@@ -1,6 +1,9 @@
 import { query as q } from "faunadb";
-import { FaunaIndexes } from "./../../../services/enums/fauna.enum";
-import { fauna, FaunaCollections } from "./../../../services/fauna";
+import {
+  fauna,
+  FaunaCollections,
+  FaunaIndexes,
+} from "./../../../services/fauna";
 import { stripe } from "./../../../services/stripe";
 
 export async function saveSubscription(
