@@ -59,9 +59,8 @@ export default function PostPreview({ post }: PostPreviewProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
-  const slug = "prisma-uma-das-melhores-coisas-que-ja-aconteceu-no-ecossistema";
   return {
-    paths: [{ params: { slug } }],
+    paths: [],
     fallback: "blocking",
   };
 };

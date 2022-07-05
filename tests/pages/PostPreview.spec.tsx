@@ -91,4 +91,30 @@ describe("Post Preview page", () => {
       }),
     );
   });
+
+  it("redirect if slug is favicon.png", async () => {
+    const slug = "favicon.png";
+
+    const response = await getStaticProps({ params: { slug: slug } });
+
+    expect(response).toEqual(
+      expect.objectContaining({
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      }),
+    );
+  });
+
+  it("should return default value when call getStaticPaths", async () => {
+    const response = await getStaticPaths({});
+
+    expect(response).toEqual(
+      expect.objectContaining({
+        paths: [],
+        fallback: "blocking",
+      }),
+    );
+  });
 });

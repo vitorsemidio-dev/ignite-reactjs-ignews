@@ -92,4 +92,29 @@ describe("Post page", () => {
       }),
     );
   });
+
+  it("rendirects if user has no auth", async () => {
+    const getSessionMocked = mocked(getSession);
+    getSessionMocked.mockResolvedValueOnce(null as any);
+
+    const slug = "my-new-post";
+
+    const response = await getServerSideProps({
+      req: {
+        cookies: {},
+      },
+      params: {
+        slug: slug,
+      },
+    } as any);
+
+    expect(response).toEqual(
+      expect.objectContaining({
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      }),
+    );
+  });
 });

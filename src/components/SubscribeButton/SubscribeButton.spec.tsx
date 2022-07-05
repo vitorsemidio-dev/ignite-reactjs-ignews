@@ -3,9 +3,13 @@ import { SubscribeButton } from ".";
 import { signIn, useSession } from "next-auth/react";
 import { mocked } from "jest-mock";
 import { useRouter } from "next/router";
+import { api } from "../../services/api";
+import { getStripeJs } from "../../services/stripe-js";
 
 jest.mock("next/router");
 jest.mock("next-auth/react");
+jest.mock("../../services/api");
+jest.mock("../../services/stripe-js");
 
 describe("SubscribeButton component", () => {
   it("renders correctly", () => {
@@ -34,7 +38,7 @@ describe("SubscribeButton component", () => {
 
     fireEvent.click(subscribeButton);
 
-    expect(signInMocked).toHaveBeenCalled();
+    expect(signInMocked).toHaveBeenCalledTimes(1);
   });
 
   it("redirects to posts when user already has a subscription", () => {
@@ -66,5 +70,75 @@ describe("SubscribeButton component", () => {
     fireEvent.click(subscribeButton);
 
     expect(pushMock).toHaveBeenCalledWith("/posts");
+  });
+
+  it("create subscription if user authenticated without active subscription", () => {
+    const apiPostMocked = mocked(api.post);
+    const getStripeJsMocked = mocked(getStripeJs);
+    const useSessionMocked = mocked(useSession);
+    const redirectToCheckoutMocked = jest.fn();
+
+    apiPostMocked.mockResolvedValue({
+      data: {
+        sessionId: "any-session-id",
+      },
+    });
+
+    getStripeJsMocked.mockResolvedValueOnce({
+      redirectToCheckout: redirectToCheckoutMocked.mockResolvedValueOnce({}),
+    } as any);
+
+    useSessionMocked.mockReturnValueOnce({
+      data: {
+        user: {
+          name: "John Doe",
+          email: "johndoe@email.com",
+          image: "http://image.com",
+        },
+        expires: "fake-expires",
+      },
+      status: "authenticated",
+    });
+
+    render(<SubscribeButton />);
+
+    const subscribeButton = screen.getByText("Subscribe now");
+
+    fireEvent.click(subscribeButton);
+
+    expect(apiPostMocked).toHaveBeenCalledTimes(1);
+  });
+
+  it("throw error create subscription if user authenticated without active subscription", () => {
+    const apiPostMocked = mocked(api.post);
+    const getStripeJsMocked = mocked(getStripeJs);
+    const useSessionMocked = mocked(useSession);
+    const redirectToCheckoutMocked = jest.fn();
+
+    apiPostMocked.mockRejectedValue(null);
+
+    getStripeJsMocked.mockResolvedValueOnce({
+      redirectToCheckout: redirectToCheckoutMocked.mockResolvedValueOnce({}),
+    } as any);
+
+    useSessionMocked.mockReturnValueOnce({
+      data: {
+        user: {
+          name: "John Doe",
+          email: "johndoe@email.com",
+          image: "http://image.com",
+        },
+        expires: "fake-expires",
+      },
+      status: "authenticated",
+    });
+
+    render(<SubscribeButton />);
+
+    const subscribeButton = screen.getByText("Subscribe now");
+
+    fireEvent.click(subscribeButton);
+
+    expect(apiPostMocked).rejects;
   });
 });
