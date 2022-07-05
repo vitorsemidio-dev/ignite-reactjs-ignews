@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const session = await getSession({ req });
   const { slug } = params;
 
-  if (slug === "favicon.png") {
+  if (!session || slug === "favicon.png") {
     return {
       redirect: {
         destination: "/",
