@@ -130,7 +130,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 🔖 Layout
 
-Você pode visualizar o layout do projeto através [desse link](https://www.figma.com/community/file/1120711251998877938). É necessário ter conta no [Figma](https://figma.com) para acessá-lo.
+Você pode visualizar o layout do projeto através [desse link](https://www.figma.com/file/M8vjtm801IaCEiee0wdwmR/ig.news?node-id=1%3A2). É necessário ter conta no [Figma](https://figma.com) para acessá-lo.
 
 <img src=".github/ig-news-figma.png" />
 
