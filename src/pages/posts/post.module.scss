@@ -39,6 +39,10 @@
       }
     }
 
+    img {
+      width: 100%;
+    }
+
     &.postContentPreview {
       background: linear-gradient(var(--gray-100), transparent);
       background-clip: text;
