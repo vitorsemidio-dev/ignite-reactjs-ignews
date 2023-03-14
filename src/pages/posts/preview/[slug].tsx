@@ -75,14 +75,7 @@ type PrismicTypePostResponse = {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
 
-  if (slug === "favicon.png") {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
+
   const prismic = getPrismicClient();
 
   const response = await prismic.getByUID<PrismicTypePostResponse>(

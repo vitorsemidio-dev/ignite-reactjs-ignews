@@ -52,15 +52,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   const session = await getSession({ req });
   const { slug } = params;
 
-  if (!session || slug === "favicon.png") {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
   if (!session?.userActiveSubscription) {
     return {
       redirect: {
@@ -88,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         day: "2-digit",
         month: "long",
         year: "numeric",
-      },
+      }
     ),
   };
 
